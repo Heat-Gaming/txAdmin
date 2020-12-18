@@ -41,7 +41,10 @@ module.exports = {
             color: cardColor,
             title: cardTitle,
             description: desc,
-            footer: `Powered by txAdmin v${GlobalData.txAdminVersion}.`
+            footer: `Powered by txAdmin v${GlobalData.txAdminVersion}.`,
+            thumbnail: {
+		        url: 'https://i.imgur.com/wSTFkRM.png',
+	        },
         });
         return await message.channel.send(outMsg);
     },
