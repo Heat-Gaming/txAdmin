@@ -21,6 +21,7 @@ module.exports = {
         ];
         const outMsg = new RichEmbed({
             color: 0x4287F5,
+            thumbnail: "https://raw.githubusercontent.com/Heat-Gaming/assets/master/server%20images/sv1.png",
             description: descLines.join('\n')
         });
         return await message.channel.send(outMsg);
