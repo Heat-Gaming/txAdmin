@@ -10,7 +10,7 @@ module.exports = {
             color: 0x4DEEEA,
             title: `${globals.config.serverName} uses txAdmin v${GlobalData.txAdminVersion} :smiley:`,
             description: `Checkout the project:\n GitHub: https://github.com/tabarra/txAdmin\n Discord: https://discord.gg/f3TsfvD`,
-            thumbnail: "https://raw.githubusercontent.com/Heat-Gaming/assets/master/server%20images/sv1.png",
+            thumbnail: "https://raw.githubusercontent.com/Heat-Gaming/assets/master/server%20images/sv1.png"
         });
         return await message.channel.send(outMsg);
     },
