@@ -42,9 +42,7 @@ module.exports = {
             title: cardTitle,
             description: desc,
             footer: `Powered by txAdmin v${GlobalData.txAdminVersion}.`,
-            thumbnail: {
-		        url: 'https://i.imgur.com/wSTFkRM.png',
-	        },
+            thumbnail: "https://raw.githubusercontent.com/Heat-Gaming/assets/master/server%20images/sv1.png",
         });
         return await message.channel.send(outMsg);
     },
