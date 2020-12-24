@@ -439,10 +439,36 @@
         <div class="col-md-7 mw-col8">
             <div class="card border-danger">
                 <div class="card-header text-center">
-                    <h5 class="d-inline">Danger Zone</h5>
+                    <h5 class="d-inline">Master Actions</h5>
                 </div>
                 <div class="card-body">
-                    <!-- reset fxserver -->
+                    <!-- Backup Database -->
+                    <div class="row text-center pt-2">
+                        <div class="col-lg-9 text-lg-left mb-2">
+                            <h5>Backup Database <span class="badge badge-info">NEW</span></h5>
+                            Download a copy of the <code>playersDB.json</code> file containing all players and actions (bans, warns and whitelists).  
+                            You should do this every once in a while.
+                        </div>
+                        <div class="col-lg-3 text-lg-right">
+                            <a class="btn btn-sm btn-outline-danger" target="_blank" href="/masterActions/backupDatabase">Backup Database</a>
+                        </div>
+                    </div>
+                    <hr class="m-1">
+
+                    <!-- Import bans -->
+                    <div class="row text-center pt-2">
+                        <div class="col-lg-9 text-lg-left mb-2">
+                            <h5>Import Bans <span class="badge badge-info">NEW</span></h5>
+                            If you wish to migrate from another ban system, use this tool to import existing bans. <br>
+                            Supported systems: EasyAdmin, BanSQL, vMenu, vRP, el_bwh.
+                        </div>
+                        <div class="col-lg-3 text-lg-right">
+                            <a class="btn btn-sm btn-outline-danger" href="/masterActions/importBans">Import Bans</a>
+                        </div>
+                    </div>
+                    <hr class="m-1">
+
+                    <!-- Reset FXServer -->
                     <div class="row text-center">
                         <div class="col-lg-9 text-lg-left mb-2">
                             <h5>Reset FXServer</h5>
@@ -452,24 +478,11 @@
                         </div>
                         <div class="col-lg-3 text-lg-right">
                             <button class="btn btn-sm btn-outline-danger" type="button" 
-                                onclick="dangerZoneActions('reset');">Reset FXServer</button>
-                        </div>
-                    </div>
-                    <hr class="m-1">
-
-                    <!-- Import bans -->
-                    <div class="row text-center pt-2">
-                        <div class="col-lg-9 text-lg-left mb-2">
-                            <h5>Import Bans <span class="badge badge-danger">NEW</span></h5>
-                            If you wish to migrate from another ban system, use this tool to import existing bans. <br>
-                            Supported systems: EasyAdmin, BanSQL, vMenu, vRP.
-                        </div>
-                        <div class="col-lg-3 text-lg-right">
-                            <a class="btn btn-sm btn-outline-danger" href="/dangerZone/importBans">Import Bans</a>
+                                onclick="masterActionsActions('reset_fxserver');">Reset FXServer</button>
                         </div>
                     </div>
                     <!-- <hr class="m-1"> -->
-                    
+
                 </div>
             </div>
         </div>
@@ -490,8 +503,8 @@
         $('#frmMonitor-timezoneAlert').html(msg);
     }
 
-    //============================================== Danger Zone
-    function dangerZoneActions(action){
+    //============================================== Master Actions
+    function masterActionsActions(action){
         if(!window.confirm(`Are you sure you want to Reset FXServer Settings?`)){
             return;
         }
@@ -499,12 +512,12 @@
 
         $.ajax({
             type: "POST",
-            url: `/dangerZone/${action}`,
+            url: `/masterActions/${action}`,
             timeout: timeoutMedium,
             data: {},
             dataType: 'json',
             success: function (data) {
-                if(action == 'reset' && data.success == true){
+                if(action == 'reset_fxserver' && data.success == true){
                     window.location = '/setup';
                     return;
                 }else{

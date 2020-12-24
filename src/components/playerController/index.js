@@ -1,9 +1,10 @@
 //Requires
 const modulename = 'PlayerController';
-const humanizeDuration = require('humanize-duration'); //FIXME: remove, this controller is not the right place for interface stuff
 const low = require('lowdb');
 const FileAsync = require('lowdb/adapters/FileAsync');
 const { customAlphabet } = require('nanoid');
+const humanizeDuration = require('humanize-duration'); //FIXME: remove, this controller is not the right place for interface stuff
+const xss = require('../../extras/xss')(); //FIXME: same as above
 const { dir, log, logOk, logWarn, logError } = require('../../extras/console')(modulename);
 
 //Helpers
@@ -148,8 +149,16 @@ module.exports = class PlayerController {
             // await this.dbo.set('players', []).write(); //DEBUG
             if(this.config.wipePendingWLOnStart) await this.dbo.set('pendingWL', []).write();
         } catch (error) {
-            logError(`Failed to load database file '${dbPath}'`);
-            if(GlobalData.verbose) dir(error);
+            if(error.message.startsWith('Malformed JSON')){
+                logError(`Your database file got corrupted and could not be loaded.`);
+                logError(`If you have a backup, you can manually replace the file.`);
+                logError(`If you don't care about the contents (players/bans/whitelists), just delete the file.`);
+                logError(`You can also try restoring it manually.`);
+                logError(`Database path: '${dbPath}'`);
+            }else{
+                logError(`Failed to load database file '${dbPath}'`);
+                if(GlobalData.verbose) dir(error);
+            }
             process.exit();
         }
     }
@@ -324,6 +333,15 @@ module.exports = class PlayerController {
             return {allow: true, reason: 'checks disabled'};
         }
 
+        //DEBUG: save join log
+        const toLog = {
+            ts: Date.now(),
+            playerName, 
+            idArray,
+        }
+        globals.databus.joinCheckHistory.push(toLog);
+        if(globals.databus.joinCheckHistory.length > 25) globals.databus.joinCheckHistory.shift();
+
         //Sanity checks
         if(typeof playerName !== 'string') throw new Error('playerName should be an string.');
         if(!Array.isArray(idArray)) throw new Error('Identifiers should be an array.');
@@ -349,21 +367,21 @@ module.exports = class PlayerController {
                 const ban = hist.find((a) => a.type == 'ban');
                 if(ban){
                     let msg;
+                    const tOptions = {
+                        id: ban.id,
+                        reason: xss(ban.reason),
+                        author: xss(ban.author),
+                    }
                     if(ban.expiration){
                         const humanizeOptions = {
                             language: globals.translator.t('$meta.humanizer_language'),
                             round: true,
                             units: ['d', 'h'],
                         }
-                        const expiration = humanizeDuration((ban.expiration - ts)*1050, humanizeOptions);
-                        msg = `You have been banned from this server.\n`;
-                        msg += `Your ban will expire in: ${expiration}.\n`;
-                        msg += `Ban ID: ${ban.id}.\n`;
-                        msg += `Ban Reason: ${ban.reason}.`;
+                        tOptions.expiration = humanizeDuration((ban.expiration - ts)*1000, humanizeOptions);
+                        msg = globals.translator.t('ban_messages.reject_temporary', tOptions);
                     }else{
-                        msg = `You have been permanently banned from this server.\n`;
-                        msg += `Ban ID: ${ban.id}.\n`;
-                        msg += `Ban Reason: ${ban.reason}.`;
+                        msg = globals.translator.t('ban_messages.reject_permanent', tOptions);
                     }
                     
                     return {allow: false, reason: msg};

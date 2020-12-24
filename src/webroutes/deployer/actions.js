@@ -10,6 +10,9 @@ const helpers = require('../../extras/helpers');
 //Helper functions
 const isUndefined = (x) => { return (typeof x === 'undefined') };
 
+//FIXME: temporary fix for the yarn issue requiring fxchild.stdin writes
+let yarnInputFix, yarnInputFixCounter;
+
 
 /**
  * Handle all the server control actions
@@ -106,7 +109,9 @@ async function handleSetVariables(ctx) {
             addPrincipalLines.push(`add_principal identifier.${admin.providers[providerName].identifier} group.admin`);
         }
     });
-    userVars.addPrincipalsMaster = addPrincipalLines.join('\n');
+    userVars.addPrincipalsMaster = (addPrincipalLines.length)
+        ? addPrincipalLines.join('\n') 
+        : `# Deployer Note: this admin master has no identifiers to be automatically added.`;
 
     //Start deployer
     try {
@@ -163,11 +168,28 @@ async function handleSaveConfig(ctx) {
     const newFXRunnerConfig = globals.configVault.getScopedStructure('fxRunner');
     newFXRunnerConfig.serverDataPath = slash(path.normalize(globals.deployer.deployPath));
     newFXRunnerConfig.cfgPath = slash(path.normalize(cfgFilePath));
+    if(typeof globals.deployer.recipe.onesync !== 'undefined'){
+        newFXRunnerConfig.onesync = globals.deployer.recipe.onesync;
+    }
     const saveFXRunnerStatus = globals.configVault.saveProfile('fxRunner', newFXRunnerConfig);
 
     if(saveFXRunnerStatus){
         globals.fxRunner.refreshConfig();
         ctx.utils.logAction(`Completed and committed server deploy.`);
+
+        //FIXME: temporary fix for the yarn issue requiring fxchild.stdin writes
+        yarnInputFixCounter = 0;
+        clearInterval(yarnInputFix);
+        yarnInputFix = setInterval(() => {
+            if(yarnInputFixCounter > 6){
+                if(GlobalData.verbose) log('Clearing yarnInputFix setInterval');
+                clearInterval(yarnInputFix);
+            }
+            yarnInputFixCounter++;
+            try {
+                globals.fxRunner.srvCmd(`txaPing temporary_yarn_workaround_please_ignore#${yarnInputFixCounter}`);
+            } catch (error) {}
+        }, 30*1000);
 
         //Starting server
         const spawnMsg = await globals.fxRunner.spawnServer(false);

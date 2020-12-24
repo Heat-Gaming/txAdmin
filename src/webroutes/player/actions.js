@@ -1,5 +1,6 @@
 //Requires
 const modulename = 'WebServer:PlayerActions';
+const humanizeDuration = require('humanize-duration');
 const xss = require('../../extras/xss')();
 const { dir, log, logOk, logWarn, logError } = require('../../extras/console')(modulename);
 
@@ -157,10 +158,6 @@ async function handleKick(ctx) {
 
     //Prepare and send command
     ctx.utils.logAction(`Kicked #${id}: ${reason}`);
-    // let message = `You have been kicked from this server. \n`;
-    // message += `<b>Kicked for:</b> ${xss(reason)} \n`;
-    // message += `<b>Kicked by:</b> ${xss(ctx.session.auth.username)}`;
-    // const msg = `[🆃🆇🅰🅳🅼🅸🅽] You have been kicked from this server by ${xss(ctx.session.auth.username)}. Kick reason: ${xss(reason)}`;
     const msg = `[txAdmin] (${xss(ctx.session.auth.username)}) Kick reason: ${xss(reason)}`;
     const cmd = formatCommand('txaKickID', id, msg);
     const toResp = await globals.fxRunner.srvCmdBuffer(cmd);
@@ -244,6 +241,7 @@ async function handleBan(ctx) {
 
     //Calculating expiration
     let expiration;
+    let duration;
     if(inputDuration === 'permanent'){
         expiration = false;
 
@@ -253,8 +251,7 @@ async function handleBan(ctx) {
         if (isNaN(multiplier) || multiplier < 1) {
             return ctx.send({type: 'danger', message: 'The duration multiplier must be a number above 1.'});
         }
-
-        let duration;
+        
         if(unit.startsWith('hour')){
             duration = multiplier * 3600;
         }else if (unit.startsWith('day')){
@@ -280,8 +277,22 @@ async function handleBan(ctx) {
     }
 
     //Prepare and send command
-    const durationMessage = (expiration !== false) ? `for ${inputDuration}` : 'permanently';
-    const msg = `[txAdmin] (${xss(ctx.session.auth.username)}) You have been banned from this server ${durationMessage}. Ban reason: ${xss(reason)}`;
+    let msg;
+    const tOptions = {
+        author: xss(ctx.session.auth.username),
+        reason: xss(reason),
+    }
+    if(expiration !== false){
+        const humanizeOptions = {
+            language: globals.translator.t('$meta.humanizer_language'),
+            round: true,
+            units: ['d', 'h'],
+        }
+        tOptions.expiration = humanizeDuration((duration)*1000, humanizeOptions);
+        msg = '[txAdmin] ' + globals.translator.t('ban_messages.kick_temporary', tOptions);
+    }else{
+        msg = '[txAdmin] ' + globals.translator.t('ban_messages.kick_permanent', tOptions);
+    }
 
     let cmd;
     if(Array.isArray(reference)){

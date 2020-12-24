@@ -73,8 +73,8 @@ if(typeof txAdminVersion !== 'string' || txAdminVersion == 'null'){
 //Check if this version of txAdmin is too outdated to be considered safe to use in prod
 //NOTE: Only valid if its being very actively maintained.
 //          Use 30d for patch 0, or 45~60d otherwise
-const txAdminVersionBestBy = 1606277666 + (26 * 86400); 
-// dir(new Date(txAdminVersionBestBy*1000).toLocaleString()) // 21/12/2020 02:14:26 BRT 
+const txAdminVersionBestBy = 1608440000 + (22 * 86400); 
+// dir(new Date(txAdminVersionBestBy*1000).toLocaleString()) // 11/01/2021 02:53:20 BRT 
 if(now() > txAdminVersionBestBy){
     logError(`This version of txAdmin is outdated.`);
     logError(`Please update as soon as possible.`);
@@ -110,6 +110,21 @@ try {
     if(!fs.existsSync(dataPath)) fs.mkdirSync(dataPath);
 } catch (error) {
     logDie(`Failed to check or create '${dataPath}' with error: ${error.message}`);
+}
+
+//Check paths for non-ASCII characters
+//NOTE: Non-ASCII in one of those paths (don't know which) will make NodeJS crash due to a bug in v8 (or something)
+//      when running localization methods like Date.toLocaleString().
+//      There was also an issue with the slash() lib and with the +exec on FXServer
+const nonASCIIRegex = /[^\u0000-\u0080]+/
+if(nonASCIIRegex.test(fxServerPath) || nonASCIIRegex.test(dataPath)){
+    logError(`Due to environmental restrictions, your paths CANNOT contain non-ASCII characters.`);
+    logError(`Example of non-ASCII characters: çâýå, ρέθ, ñäé, ēļæ, глж, เซิร์, 警告.`);
+    logError(`Please make sure FXServer is not in a path contaning those characters.`);
+    logError(`If on windows, we suggest you moving the artifact to "C:/fivemserver/${fxServerVersion}/".`);
+    log(`FXServer path: ${fxServerPath}`);
+    log(`txData path: ${dataPath}`);
+    process.exit(1);
 }
 
 //Get Web Port
