@@ -21,7 +21,7 @@
     <div class="c-sidebar c-sidebar-dark c-sidebar-fixed c-sidebar-lg-show" id="sidebar">
         <div class="c-sidebar-brand d-md-down-none">
             <a href="/">
-                <img class="c-sidebar-brand-full" src="img/txadmin.png" width="118" alt="txAdmin Logo">
+                <img class="c-sidebar-brand-full" src="img/txadmin.png" width="200" alt="txAdmin Logo">
                 <img class="c-sidebar-brand-minimized" src="img/tx.png" width="30" height="30" alt="txAdmin Logo">
             </a>
         </div>
@@ -131,8 +131,7 @@
                     </small>
                 </div>
                 <div class="progress progress-xs">
-                    <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="0"
-                        aria-valuemin="0" aria-valuemax="100" id="hostusage-cpu-bar"></div>
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="hostusage-cpu-bar"></div>
                 </div>
                 <small class="text-muted" id="hostusage-cpu-text">loading...</small>
             </li>
@@ -143,14 +142,12 @@
                     </small>
                 </div>
                 <div class="progress progress-xs">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="0"
-                        aria-valuemin="0" aria-valuemax="100" id="hostusage-memory-bar"></div>
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="hostusage-memory-bar"></div>
                 </div>
                 <small class="text-muted" id="hostusage-memory-text">loading...</small>
             </li>
         </ul>
-        <button class="c-sidebar-minimizer c-class-toggler" type="button" data-target="_parent"
-            data-class="c-sidebar-minimized"></button>
+        <button class="c-sidebar-minimizer c-class-toggler" type="button" data-target="_parent" data-class="c-sidebar-minimized"></button>
     </div>
 
     <!-- Player List -->
@@ -165,13 +162,12 @@
                     <span class="plheader-bignum float-right" id="plist-count">--</span>
                 </div>
                 <div class="list-group-item list-group-item-accent-secondary playerlist-search">
-                    <input class="form-control form-control-sm text-center" type="text"
-                        placeholder="Search" id="plist-search">
+                    <input class="form-control form-control-sm text-center" type="text" placeholder="Search" id="plist-search">
                 </div>
                 <div class="playerlist thin-scroll" id="playerlist">
-                  <div class="list-group-item text-center p-3 font-weight-bold" id="playerlist-message">
-                    loading...
-                  </div>
+                    <div class="list-group-item text-center p-3 font-weight-bold" id="playerlist-message">
+                        loading...
+                    </div>
                 </div>
             </div>
         </div>
@@ -182,11 +178,10 @@
         <!-- Header -->
         <header class="c-header c-header-light c-header-fixed c-header-with-subheader">
             {{@if(it.serverProfile !== 'default')}}
-                <h5 class="c-header-nav font-weight-light px-3">Profile: {{it.serverProfile}}</h5>
+            <h5 class="c-header-nav font-weight-light px-3">Profile: {{it.serverProfile}}</h5>
             {{/if}}
 
-            <button class="c-header-toggler c-class-toggler d-lg-none mfe-auto" type="button" data-target="#sidebar"
-                data-class="c-sidebar-show">
+            <button class="c-header-toggler c-class-toggler d-lg-none mfe-auto" type="button" data-target="#sidebar" data-class="c-sidebar-show">
                 <svg class="c-icon c-icon-lg">
                     <use href="img/coreui_icons.svg#cil-menu"></use>
                 </svg>
@@ -207,8 +202,7 @@
                 </li>
 
                 <li class="c-header-nav-item dropdown">
-                    <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-                        aria-expanded="false">
+                    <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                         <span class="d-md-down-none pr-2">{{it.adminUsername}} </span>
                         <div class="c-avatar">
                             <img class="c-avatar-img profile-pic" src="{{it.profilePicture}}" alt="{{it.adminUsername}}">
@@ -231,8 +225,7 @@
                     </div>
                 </li>
             </ul>
-            <button class="c-header-toggler c-class-toggler d-xl-none" type="button" data-target="#plist"
-                data-class="playerlist-sidebar-max">
+            <button class="c-header-toggler c-class-toggler d-xl-none" type="button" data-target="#plist" data-class="playerlist-sidebar-max">
                 <svg class="c-icon c-icon-lg">
                     <use href="img/coreui_icons.svg#cil-menu"></use>
                 </svg>
@@ -244,4 +237,4 @@
             <main class="c-main thin-scroll" id="mainbody">
                 <div class="container-fluid">
                     <div class="fade-in">
-<!-- Begin Page Content -->
+                        <!-- Begin Page Content -->
