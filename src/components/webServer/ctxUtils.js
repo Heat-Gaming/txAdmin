@@ -26,7 +26,7 @@ const getRenderErrorText = (view, error, data) => {
 }
 const getWebViewPath = (view) => {
     if(view.includes('..')) throw new Error('Path Traversal?');
-    return path.join(GlobalData.txAdminResourcePath, 'web/', view+'.html');
+    return path.join(GlobalData.txAdminResourcePath, 'web', view+'.html');
 }
 
 //Squirrelly Filters
@@ -53,6 +53,9 @@ sqrl.filters.define("escapeBackTick", (x)=>{
 });
 sqrl.filters.define("base64", (x)=>{
     return Buffer.from(x).toString('base64');
+});
+sqrl.filters.define("ternary", (x)=>{
+    return (x[0])? x[2] : x[1];
 });
 
 //================================================================
