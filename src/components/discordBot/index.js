@@ -48,12 +48,6 @@ module.exports = class DiscordBot {
             }
         }
 
-        client.api.applications(client.user.id).guilds('748025301581430877').commands.post({
-            data: {
-                name: "status",
-                description: "Replies with Status of Server"
-            }
-        });
 
         //================================================================
         /**
